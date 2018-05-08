@@ -7,6 +7,7 @@ Another attempt at a LIFX library, this time written in [Dart](https://www.dartl
 ```dart
 var lifx = new LIFX("api_key_here");
 ```
+* Be sure to run `pub get` before attempting to use.
 
 ## Methods
 

@@ -3,15 +3,20 @@ dart_lifx
 
 Another attempt at a LIFX library, this time written in [Dart](https://www.dartlang.org).
 
-* Requires [LIFX API key](https://cloud.lifx.com) when creating a new object:
+* Requires [LIFX API key](https://cloud.lifx.com) when creating a new object.
 ```dart
-var lifx = new LIFX("api_key_here");
+import 'package:lifx/lifx.dart';
+
+void main() {
+    var lifx = new LIFX("api_key_here");
+
+    lifx.getLights().then((res) => print(res));
+}
 ```
-* Be sure to run `pub get` before attempting to use.
 
 ## Methods
 
-All methods contain optional `light` parameter, by default all lights are selected. Pass light ID, found with `getLights()` to control individual lights.
+All methods are asynchronous and contain optional `light` parameter, by default all lights are selected. Pass light ID, found with `getLights()` to control individual lights.
 
 ```dart
 Future<Map> getLights([String light = "all"])

@@ -17,12 +17,34 @@ void main() {
 
 ## Methods
 
-All methods are asynchronous and contain optional `light` parameter, by default all lights are selected. Pass light ID, found with `getLights()` to control individual lights.
+All methods are asynchronous and contain optional `light` parameter, by default all lights are selected. Pass light ID, found with `getLights()` to control individual lights. 
+
+Read more about `setState` [here](https://api.developer.lifx.com/docs/set-state).
 
 ```dart
-Future<Map> getLights([String light = "all"])
+Future<Map> getLights({String light = "all"})
 ```
 
 ```dart
-Future<bool> togglePower([String light = "all"]) 
+Future<Map> getScenes()
+```
+
+```dart
+Future<bool> activateScene(String uuid, {double duration = 1.0})
+```
+
+```dart
+Future<bool> togglePower({String light = "all"}) 
+```
+
+```dart
+Future<bool> setState({String light = "all", String power = "on", String color = "", double brightness = 0.5, double duration = 1.5, double infrared = 0.0})
+```
+
+## Extra
+
+Gets the hexidecimal value from standard RGB (0 - 255) values to easily set color in `setState()`.
+
+```dart
+String getHexFromRGB(int red, int green, int blue)
 ```

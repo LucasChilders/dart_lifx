@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:json_object/json_object.dart';
-
+import "package:hex/hex.dart";
 
 class LIFX {
     Map _apiKeyHeader;
@@ -10,7 +10,7 @@ class LIFX {
     /**
      * Requires [apiKey] to be passed.
      * 
-     * [loggerEnabled] is a optional, defaulted to false. When true,
+     * [_loggerEnabled] is a optional, defaulted to false. When true,
      * all [response.statusCode] and [response.body] will be printed.
      */
 
@@ -18,16 +18,27 @@ class LIFX {
         this._apiKeyHeader = { "Authorization": "Bearer $apiKey" };
     }
 
+
     /**
-     * Instead of print(), logger() is used in order to toggle
+     * Instead of [print()], [_logger()] is used in order to toggle
      * debug output.
      */
 
-    void logger(String log) {
+    void _logger(String log) {
         if (this.loggingEnabled) {
             print(log);
         }
     }
+
+
+    /**
+     * Gets the hexidecimal value from standard RGB (0 - 255) values to easily set color.
+     */
+
+    String getHexFromRGB(int red, int green, int blue) {
+        return "#${HEX.encode([red, green, blue])}";
+    }
+
 
     /**
      * Asynchronously returns a Map containing every light by [label] and [id] 
@@ -40,8 +51,8 @@ class LIFX {
         Completer<Map> com = new Completer<Map>();
 
         http.get(url, headers: _apiKeyHeader).then((response) {
-            logger("Response status: ${response.statusCode}");
-            logger("Response body: ${response.body}");
+            _logger("Response status: ${response.statusCode}");
+            _logger("Response body: ${response.body}");
 
             if (response.statusCode == 200) {
                 Map lights = new Map();
@@ -72,18 +83,65 @@ class LIFX {
 
 
     /**
-     * Asynchronously returns a boolean based on the [response.statusCode] 
-     * of the API request.
+     * Asynchronously returns a Map containing every scene by [name] and [uuid] 
+     * as well as the [count] of total scenes.
      */ 
 
-    Future<bool> togglePower({String light = "all"}) async {
-        final url = "https://api.lifx.com/v1/lights/$light/toggle";
+    Future<Map> getScenes() async {
+        final url = "https://api.lifx.com/v1/scenes";
+
+        Completer<Map> com = new Completer<Map>();
+
+        http.get(url, headers: _apiKeyHeader).then((response) {
+            _logger("Response status: ${response.statusCode}");
+            _logger("Response body: ${response.body}");
+
+            if (response.statusCode == 200) {
+                Map scenes = new Map();
+                int sceneCount = 0;
+                var parsedResponse = new JsonObject.fromJsonString(response.body);
+
+                try {
+                    for (int i = 0; ; i++) {
+                        scenes.putIfAbsent(parsedResponse[i].name, () => parsedResponse[i].uuid);
+                        sceneCount++;
+                    }
+                } 
+                 
+                catch (e) {
+                    scenes.putIfAbsent("count", () => sceneCount);
+                }
+
+                com.complete(scenes);
+            }
+            
+            else {
+                com.complete(new Map().putIfAbsent("error", () => "${response.statusCode}"));
+            }
+        });
+
+        return com.future;
+    }
+
+
+    /**
+     * Asynchronously returns a boolean based on the [response.statusCode] 
+     * of the API request. Requires UUID of scene found in [getScenes()], 
+     * optional [duration].
+     */ 
+
+    Future<bool> activateScene(String uuid, {double duration = 1.0}) async {
+        final url = "https://api.lifx.com/v1/scenes/scene_id:$uuid/activate";
 
         Completer<bool> com = new Completer<bool>();
 
-        http.post(url, headers: _apiKeyHeader).then((response) {
-            logger("Response status: ${response.statusCode}");
-            logger("Response body: ${response.body}");
+        var bodyParams = {
+            "duration": "$duration"
+        };
+
+        http.put(url, headers: _apiKeyHeader, body: bodyParams).then((response) {
+            _logger("Response status: ${response.statusCode}");
+            _logger("Response body: ${response.body}");
             
             if (response.statusCode == 207) {
                 com.complete(true);
@@ -94,6 +152,32 @@ class LIFX {
 
         return com.future;
     }
+
+
+    /**
+     * Asynchronously returns a boolean based on the [response.statusCode] 
+     * of the API request. Optional [light] id found in [getLights()].
+     */ 
+
+    Future<bool> togglePower({String light = "all"}) async {
+        final url = "https://api.lifx.com/v1/lights/$light/toggle";
+
+        Completer<bool> com = new Completer<bool>();
+
+        http.post(url, headers: _apiKeyHeader).then((response) {
+            _logger("Response status: ${response.statusCode}");
+            _logger("Response body: ${response.body}");
+            
+            if (response.statusCode == 207) {
+                com.complete(true);
+            } else {
+                com.complete(false);
+            }
+        });
+
+        return com.future;
+    }
+
 
     /**
      * Asynchronously returns a boolean based on the [response.statusCode]
@@ -123,15 +207,17 @@ class LIFX {
 
         Completer<bool> com = new Completer<bool>();
 
-        var bodyParams = { "power": "$power",
-                           "color": "$color",
-                           "brightness": "$brightness",
-                           "duration": "$duration",
-                           "infrared": "$infrared" };
+        var bodyParams = { 
+            "power": "$power",
+            "color": "$color",
+            "brightness": "$brightness",
+            "duration": "$duration",
+            "infrared": "$infrared" 
+        };
 
         http.put(url, headers: _apiKeyHeader, body: bodyParams).then((response) {
-            logger("Response status: ${response.statusCode}");
-            logger("Response body: ${response.body}");
+            _logger("Response status: ${response.statusCode}");
+            _logger("Response body: ${response.body}");
             
             if (response.statusCode == 207) {
                 com.complete(true);

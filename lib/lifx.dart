@@ -28,7 +28,7 @@ class LIFX {
                         lightCount++;
                     }
                 } 
-                
+                 
                 catch (e) {
                     lights.putIfAbsent("count", () => lightCount);
                 }

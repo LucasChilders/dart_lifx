@@ -1,5 +1,10 @@
 name: lifx
+author: Lucas Childers <lucas1757+dartlifx@gmail.com>
+description: A simple library to interact with LIFX lights.
+homepage: https://github.com/lucaschilders/dart_lifx
+version: 0.1.0
 dependencies:
-  http: "^0.11.3+16"
-  json_object: any
-  unittest: any
+  http: ">=0.11.3+16 <0.12.0"
+  json_object: ">=1.0.19+1 <2.0.0"
+  unittest: ">=0.11.7 <0.12.0"
+  convert: ">=2.0.1 <3.0.0"

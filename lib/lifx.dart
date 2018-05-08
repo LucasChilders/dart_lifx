@@ -63,4 +63,3 @@ class LIFX {
         return com.future;
     }
 }
-

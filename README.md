@@ -3,12 +3,13 @@ dart_lifx
 
 Another attempt at a LIFX library, this time written in [Dart](https://www.dartlang.org).
 
-* Requires [LIFX API key](https://cloud.lifx.com) when creating a new object.
+* Requires [LIFX API key](https://cloud.lifx.com) when creating a new object. 
+* Optional named parameter, `loggingEnabled` enables or disables status codes and response body printing.
 ```dart
 import 'package:lifx/lifx.dart';
 
 void main() {
-    var lifx = new LIFX("api_key_here");
+    var lifx = new LIFX("api_key_here", loggingEnabled: true);
 
     lifx.getLights().then((res) => print(res));
 }

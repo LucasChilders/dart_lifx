@@ -1,3 +1,4 @@
 .vscode/
 .packages
 pubspec.lock
+.pub/bin/test/

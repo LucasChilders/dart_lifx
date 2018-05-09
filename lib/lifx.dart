@@ -26,7 +26,7 @@ class LIFX {
 
     void _logger(String log) {
         if (this.loggingEnabled) {
-            print(log);
+            print("${new DateTime.now()} lifx: " + log);
         }
     }
 

@@ -17,7 +17,7 @@ void main() {
 
 ## Methods
 
-All methods are asynchronous and contain optional `light` parameter, by default all lights are selected. Pass light ID, found with `getLights()` to control individual lights. 
+All methods are asynchronous and most contain optional `light` parameter, by default all lights are selected. Pass light ID, found with `getLights()` to control individual lights. 
 
 Read more about `setState` [here](https://api.developer.lifx.com/docs/set-state).
 

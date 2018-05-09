@@ -5,5 +5,5 @@ void main() {
     Map<String, String> envVars = Platform.environment;
 
     var lifx = new LIFX(envVars["DART_LIFX"], loggingEnabled: false);
-    lifx.getLights().then((res) => print(res));
+    lifx.setState(brightness: 0.5, color: "red").then((res) => print(res));
 }

@@ -3,7 +3,7 @@ author: Lucas Childers <lucas1757+dartlifx@gmail.com>
 description: A simple library to interact with LIFX lights. Currently contains 5 methods 
   used to interact with lights. 
 homepage: https://github.com/lucaschilders/dart_lifx
-version: 0.2.0
+version: 0.2.1
 dependencies:
   http: ">=0.11.3+16 <0.12.0"
   json_object: ">=1.0.19+1 <2.0.0"

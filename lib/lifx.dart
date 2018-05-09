@@ -181,7 +181,8 @@ class LIFX {
 
     /**
      * Asynchronously returns a boolean based on the [response.statusCode]
-     * of the API request. All parameters have a default value and are optional.
+     * of the API request. If not set, color, brightness, and infrared will
+     * stay the same of current light settings.
      * 
      * 
      * From: https://api.developer.lifx.com/docs/set-state
@@ -202,19 +203,29 @@ class LIFX {
      * The maximum brightness of the infrared channel.
      */
 
-    Future<bool> setState({String light = "all", String power = "on", String color = "", double brightness = 0.5, double duration = 1.5, double infrared = 0.0}) async {
+    Future<bool> setState({String light = "all", String power = "on", String color = "undefined", double brightness = -1.0, double duration = 1.5, double infrared = -1.0}) async {
         final url = "https://api.lifx.com/v1/lights/$light/state";
 
         Completer<bool> com = new Completer<bool>();
 
         var bodyParams = { 
             "power": "$power",
-            "color": "$color",
-            "brightness": "$brightness",
             "duration": "$duration",
-            "infrared": "$infrared" 
         };
 
+        if (color != "undefined") {
+            bodyParams.putIfAbsent("color", () => "$color");
+        }
+
+        if (brightness != -1.0) {
+            bodyParams.putIfAbsent("brightness", () => "$brightness");
+        }
+
+        if (infrared != -1.0) {
+            bodyParams.putIfAbsent("infrared", () => "$infrared");
+        }
+
+    
         http.put(url, headers: _apiKeyHeader, body: bodyParams).then((response) {
             _logger("Response status: ${response.statusCode}");
             _logger("Response body: ${response.body}");

@@ -47,9 +47,7 @@ class LIFX {
 
     Completer<Map> com = new Completer<Map>();
 
-    http
-        .get(uri, headers: _apiKeyHeader as Map<String, String>?)
-        .then((response) {
+    http.get(uri, headers: _apiKeyHeader).then((response) {
       _logger("Response status: ${response.statusCode}");
       _logger("Response body: ${response.body}");
 
@@ -57,6 +55,8 @@ class LIFX {
         Map lights = new Map();
         int lightCount = 0;
         print(response.body);
+
+        /// TODO: Json decode the data to object
         // var parsedResponse = new JSON.decode(response.body);
 
         //   try {
@@ -71,8 +71,8 @@ class LIFX {
         //
         //   com.complete(lights);
       } else {
-        //   com.complete(
-        //       new Map().putIfAbsent("error", () => "${response.statusCode}"));
+        com.complete(
+            new Map().putIfAbsent("error", () => "${response.statusCode}"));
       }
     });
 
@@ -89,9 +89,7 @@ class LIFX {
 
     Completer<Map> com = new Completer<Map>();
 
-    http
-        .get(uri, headers: _apiKeyHeader as Map<String, String>?)
-        .then((response) {
+    http.get(uri, headers: _apiKeyHeader).then((response) {
       _logger("Response status: ${response.statusCode}");
       _logger("Response body: ${response.body}");
 
@@ -99,7 +97,9 @@ class LIFX {
         Map scenes = new Map();
         int sceneCount = 0;
         print(response.body);
-        //   var parsedResponse = new JsonObject.fromJsonString(response.body);
+
+        /// TODO: Json decode the data to object
+        // var parsedResponse = new jsonDecode(response.body);
         //
         //   try {
         //     for (int i = 0;; i++) {
